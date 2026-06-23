@@ -19,10 +19,10 @@ AppointKit adds a fully-featured booking system to any WordPress site. Your cust
 ## Quick demo
 
 ```
-[appointkit]                        → full booking form (all services)
-[appointkit service_id="3"]         → pre-select a specific service
-[appointkit staff_id="5"]           → pre-select a specific staff member
-[appointkit service_id="3" staff_id="5"]   → pre-select both
+[appointkit_form]                               → full booking form (all services)
+[appointkit_form service_id="3"]                → pre-select a specific service
+[appointkit_form staff_id="5"]                  → pre-select a specific staff member
+[appointkit_form service_id="3" staff_id="5"]   → pre-select both
 ```
 
 ---
@@ -58,7 +58,7 @@ AppointKit adds a fully-featured booking system to any WordPress site. Your cust
 
 ### Embedding
 - **Gutenberg block** — drag it into any page, configure via block sidebar
-- **Shortcode** — `[appointkit]` with optional `service_id` and `staff_id` attributes
+- **Shortcode** — `[appointkit_form]` with optional `service_id` and `staff_id` attributes
 - **REST API** — full JSON API for headless setups
 
 ---
@@ -112,7 +112,7 @@ AppointKit adds a fully-featured booking system to any WordPress site. Your cust
 Add the Gutenberg block (**AppointKit Booking Form**) to any page, or use the shortcode:
 
 ```
-[appointkit]
+[appointkit_form]
 ```
 
 That's it — the form is live.

@@ -18,3 +18,4 @@
 *.log
 .DS_Store
 /pc-report.json
+/vendor

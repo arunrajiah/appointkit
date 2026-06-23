@@ -11,7 +11,7 @@
  * Plugin Name:       AppointKit – Appointment Booking & Scheduling
  * Plugin URI:        https://hub.arunrajiah.com/appointkit
  * Description:       Complete appointment booking and scheduling system for WordPress. Unlimited services, staff, and bookings. Stripe payments, Google Calendar sync, email notifications.
- * Version:           0.1.0
+ * Version:           1.0.0
  * Requires at least: 6.2
  * Requires PHP:      7.4
  * Author:            Arun Rajiah
@@ -24,7 +24,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'APPOINTKIT_VERSION', '0.1.0' );
+define( 'APPOINTKIT_VERSION', '1.0.0' );
 define( 'APPOINTKIT_PLUGIN_FILE', __FILE__ );
 define( 'APPOINTKIT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'APPOINTKIT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
