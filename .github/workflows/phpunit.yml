@@ -34,12 +34,6 @@ jobs:
       - name: Install dependencies
         run: composer update --prefer-dist --no-progress --no-interaction
 
-      - name: Install WP test suite
-        run: |
-          bash bin/install-wp-tests.sh wordpress_test wordpress wordpress 127.0.0.1 latest true
-        env:
-          WP_TESTS_DIR: /tmp/wordpress-tests-lib
-
       - name: Run PHPUnit
         run: vendor/bin/phpunit
         env:
