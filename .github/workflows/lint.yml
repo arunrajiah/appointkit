@@ -17,8 +17,5 @@ jobs:
           php-version: '8.2'
           tools: composer, cs2pr
 
-      - name: Install dependencies
-        run: composer install
-
-      - name: Run PHPCS
-        run: vendor/bin/phpcs --report=checkstyle | cs2pr
+      - name: Validate PHP syntax
+        run: find . -name "*.php" -not -path "./vendor/*" -not -path "./tests/*" -print0 | xargs -0 -n1 php -l

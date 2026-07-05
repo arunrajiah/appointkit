@@ -32,7 +32,7 @@ jobs:
           extensions: mysqli
 
       - name: Install dependencies
-        run: composer install
+        run: composer update --prefer-dist --no-progress --no-interaction
 
       - name: Install WP test suite
         run: |

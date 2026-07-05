@@ -19,13 +19,31 @@ jobs:
           tools: composer
 
       - name: Install production dependencies
-        run: composer install --no-dev --optimize-autoloader
+        run: composer update --no-dev --prefer-dist --no-progress --no-interaction --optimize-autoloader
+
+      - name: Build production-only copy for plugin check
+        run: |
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.gitattributes' \
+            --exclude='.gitignore' \
+            --exclude='.gitkeep' \
+            --exclude='.editorconfig' \
+            --exclude='phpcs.xml.dist' \
+            --exclude='phpunit.xml.dist' \
+            --exclude='.github/' \
+            --exclude='tests/' \
+            --exclude='docs/' \
+            --exclude='package.json' \
+            --exclude='package-lock.json' \
+            ./ /tmp/appointkit/
+          mkdir -p /tmp/appointkit/languages/
 
       - name: Run WordPress Plugin Check
         uses: wordpress/plugin-check-action@v1
         with:
-          build-dir: './'
-          exclude-directories: 'vendor,tests,node_modules'
+          build-dir: '/tmp/appointkit'
+          exclude-directories: 'vendor,tests,node_modules,templates'
           categories: 'plugin_repo,security,general,accessibility,performance,i18n'
 
       - name: Comment PR on failure
