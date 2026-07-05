@@ -26,6 +26,8 @@ jobs:
         run: |
           npm install -g @wordpress/env
           wp-env start
+          wp-env run cli wp plugin activate appointkit
+          wp-env run cli wp eval-file wp-content/plugins/appointkit/tests/playwright/seed-e2e.php
 
       - name: Run Playwright tests
         run: npx playwright test
