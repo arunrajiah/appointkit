@@ -63,11 +63,13 @@ function appointkit_format_duration( $minutes ) {
 	}
 	$hours      = floor( $minutes / 60 );
 	$remainder  = $minutes % 60;
+	/* translators: %d: number of hours */
 	$hour_str   = sprintf( _n( '%d hour', '%d hours', $hours, 'appointkit' ), $hours );
 	if ( 0 === $remainder ) {
 		return $hour_str;
 	}
 	/* translators: 1: hours, 2: minutes */
+	/* translators: %d: number of minutes */
 	return sprintf( __( '%1$s %2$s', 'appointkit' ), $hour_str, sprintf( _n( '%d minute', '%d minutes', $remainder, 'appointkit' ), $remainder ) );
 }
 
