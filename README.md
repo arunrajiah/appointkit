@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/assets/logo.svg" alt="AppointKit logo" width="96" height="96">
+</p>
+
 # AppointKit
 
 **Free appointment booking plugin for WordPress.** Services, staff, availability rules, Stripe payments, Google Calendar sync, and email notifications — all in one plugin with no SaaS fees and no external dependencies.
