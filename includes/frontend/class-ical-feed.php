@@ -65,6 +65,7 @@ class AppointKit_iCal_Feed {
 		$table = $wpdb->prefix . 'appointkit_staff';
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$row = $wpdb->get_row(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is built from $wpdb->prefix and a hardcoded literal; all values use placeholders.
 			$wpdb->prepare( "SELECT * FROM {$table} WHERE ical_token = %s AND status = %s", $token, 'active' )
 		);
 		return $row ? new AppointKit_Staff( $row ) : null;

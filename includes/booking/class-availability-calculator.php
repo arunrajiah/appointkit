@@ -38,11 +38,11 @@ class AppointKit_Availability_Calculator {
 	private $gcal;
 
 	public function __construct(
-		AppointKit_Services_Repository $services_repo = null,
-		AppointKit_Staff_Repository $staff_repo = null,
-		AppointKit_Bookings_Repository $bookings_repo = null,
-		AppointKit_Availability_Repository $availability_repo = null,
-		AppointKit_Google_Calendar_Sync $gcal = null
+		?AppointKit_Services_Repository $services_repo = null,
+		?AppointKit_Staff_Repository $staff_repo = null,
+		?AppointKit_Bookings_Repository $bookings_repo = null,
+		?AppointKit_Availability_Repository $availability_repo = null,
+		?AppointKit_Google_Calendar_Sync $gcal = null
 	) {
 		$this->services_repo     = $services_repo ?: new AppointKit_Services_Repository();
 		$this->staff_repo        = $staff_repo ?: new AppointKit_Staff_Repository();

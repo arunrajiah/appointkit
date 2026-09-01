@@ -68,9 +68,10 @@ function appointkit_format_duration( $minutes ) {
 	if ( 0 === $remainder ) {
 		return $hour_str;
 	}
-	/* translators: 1: hours, 2: minutes */
 	/* translators: %d: number of minutes */
-	return sprintf( __( '%1$s %2$s', 'appointkit' ), $hour_str, sprintf( _n( '%d minute', '%d minutes', $remainder, 'appointkit' ), $remainder ) );
+	$minute_str = sprintf( _n( '%d minute', '%d minutes', $remainder, 'appointkit' ), $remainder );
+	/* translators: 1: hours, 2: minutes */
+	return sprintf( __( '%1$s %2$s', 'appointkit' ), $hour_str, $minute_str );
 }
 
 /**

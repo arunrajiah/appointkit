@@ -26,10 +26,10 @@ $hours         = (int) get_option( 'appointkit_reminder_hours_before', 24 );
 			printf(
 				/* translators: %d: hours before */
 				esc_html( _n( 'Reminder: Your appointment is in %d hour', 'Reminder: Your appointment is in %d hours', $hours, 'appointkit' ) ),
-				$hours
+				absint( $hours )
 			);
 		?></h2>
-		<p style="color: #555555;"><?php printf( esc_html__( 'Hi %s,', 'appointkit' ), esc_html( $booking->customer_name ) ); ?></p>
+		<p style="color: #555555;"><?php /* translators: %s: customer name */ printf( esc_html__( 'Hi %s,', 'appointkit' ), esc_html( $booking->customer_name ) ); ?></p>
 		<p style="color: #555555;"><?php
 			printf(
 				/* translators: %s: formatted date/time */

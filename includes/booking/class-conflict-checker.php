@@ -16,7 +16,7 @@ class AppointKit_Conflict_Checker {
 	/** @var AppointKit_Bookings_Repository */
 	private $bookings_repo;
 
-	public function __construct( AppointKit_Bookings_Repository $bookings_repo = null ) {
+	public function __construct( ?AppointKit_Bookings_Repository $bookings_repo = null ) {
 		$this->bookings_repo = $bookings_repo ?: new AppointKit_Bookings_Repository();
 	}
 

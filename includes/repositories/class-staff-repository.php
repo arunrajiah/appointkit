@@ -33,6 +33,7 @@ class AppointKit_Staff_Repository {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is built from $wpdb->prefix and a hardcoded literal; all values use placeholders.
 			$wpdb->prepare( "SELECT * FROM {$this->table} WHERE status = %s ORDER BY name ASC", 'active' )
 		);
 		$staff = array_map( array( $this, 'row_to_model' ), $rows ?: array() );
@@ -52,6 +53,7 @@ class AppointKit_Staff_Repository {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table names are built from $wpdb->prefix and hardcoded literals; all values use placeholders.
 			$wpdb->prepare(
 				"SELECT s.* FROM {$this->table} s
 				 INNER JOIN {$this->pivot_table} p ON p.staff_id = s.id
@@ -61,6 +63,7 @@ class AppointKit_Staff_Repository {
 				'active'
 			)
 		);
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$staff = array_map( array( $this, 'row_to_model' ), $rows ?: array() );
 		foreach ( $staff as $member ) {
 			$member->service_ids = $this->get_service_ids( $member->id );
@@ -78,6 +81,7 @@ class AppointKit_Staff_Repository {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$row = $wpdb->get_row(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is built from $wpdb->prefix and a hardcoded literal; all values use placeholders.
 			$wpdb->prepare( "SELECT * FROM {$this->table} WHERE id = %d", $id )
 		);
 		if ( ! $row ) {
@@ -98,6 +102,7 @@ class AppointKit_Staff_Repository {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$ids = $wpdb->get_col(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is built from $wpdb->prefix and a hardcoded literal; all values use placeholders.
 			$wpdb->prepare( "SELECT service_id FROM {$this->pivot_table} WHERE staff_id = %d", $staff_id )
 		);
 		return array_map( 'intval', $ids ?: array() );

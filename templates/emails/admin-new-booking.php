@@ -21,6 +21,7 @@ $business_name = esc_html( get_option( 'appointkit_business_name', get_bloginfo(
 <table width="600" cellpadding="0" cellspacing="0" style="margin: 0 auto; background: #ffffff; border-radius: 8px; overflow: hidden;">
 	<tr><td style="background: #2c3e50; padding: 24px; text-align: center;">
 		<h1 style="color: #ffffff; margin: 0; font-size: 20px;"><?php
+			/* translators: %d: booking ID number */
 			printf( esc_html__( 'New Booking #%d', 'appointkit' ), (int) $booking->id );
 		?></h1>
 	</td></tr>

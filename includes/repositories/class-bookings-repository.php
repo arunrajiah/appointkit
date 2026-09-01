@@ -33,6 +33,7 @@ class AppointKit_Bookings_Repository {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is built from $wpdb->prefix and a hardcoded literal; all values use placeholders.
 				"SELECT * FROM {$this->table}
 				 WHERE staff_id = %d
 				   AND status NOT IN ('cancelled')
@@ -57,6 +58,7 @@ class AppointKit_Bookings_Repository {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is built from $wpdb->prefix and a hardcoded literal; all values use placeholders.
 				"SELECT * FROM {$this->table} WHERE customer_email = %s ORDER BY start_utc DESC",
 				sanitize_email( $email )
 			)
@@ -74,6 +76,7 @@ class AppointKit_Bookings_Repository {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$row = $wpdb->get_row(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is built from $wpdb->prefix and a hardcoded literal; all values use placeholders.
 			$wpdb->prepare( "SELECT * FROM {$this->table} WHERE id = %d", $id )
 		);
 		return $row ? $this->row_to_model( $row ) : null;
@@ -90,6 +93,7 @@ class AppointKit_Bookings_Repository {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$row = $wpdb->get_row(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is built from $wpdb->prefix and a hardcoded literal; all values use placeholders.
 				"SELECT * FROM {$this->table} WHERE payment_intent_id = %s",
 				sanitize_text_field( $payment_intent_id )
 			)
@@ -109,6 +113,7 @@ class AppointKit_Bookings_Repository {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is built from $wpdb->prefix and a hardcoded literal; all values use placeholders.
 				"SELECT * FROM {$this->table}
 				 WHERE status = %s
 				   AND reminder_sent = 0
@@ -148,6 +153,7 @@ class AppointKit_Bookings_Repository {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 		$wpdb->query(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is built from $wpdb->prefix and a hardcoded literal; all values use placeholders.
 				"DELETE FROM {$this->table} WHERE status = %s AND created_at < %s",
 				'pending',
 				$cutoff_utc

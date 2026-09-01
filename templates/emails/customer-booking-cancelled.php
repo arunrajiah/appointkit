@@ -23,6 +23,7 @@ $business_name = esc_html( get_option( 'appointkit_business_name', get_bloginfo(
 	<tr><td style="padding: 32px;">
 		<h2 style="color: #333333;"><?php esc_html_e( 'Booking Cancelled', 'appointkit' ); ?></h2>
 		<p style="color: #555555;"><?php
+			/* translators: %s: customer name */
 			printf( esc_html__( 'Hi %s,', 'appointkit' ), esc_html( $booking->customer_name ) );
 		?></p>
 		<p style="color: #555555;"><?php

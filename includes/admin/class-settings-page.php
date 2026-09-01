@@ -51,6 +51,8 @@ class AppointKit_Settings_Page {
 			'appointkit_remove_data_on_uninstall'  => 'absint',
 		);
 
+		// Nonce and capability are verified in render() before this method is called.
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		foreach ( $fields as $key => $sanitizer ) {
 			$value = wp_unslash( $_POST[ $key ] ?? '' );
 			update_option( $key, call_user_func( $sanitizer, $value ) );
@@ -63,6 +65,7 @@ class AppointKit_Settings_Page {
 				update_option( $secret_key, $value );
 			}
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		wp_safe_redirect( add_query_arg( array( 'page' => 'appointkit-settings', 'saved' => 1 ), admin_url( 'admin.php' ) ) );
 		exit;

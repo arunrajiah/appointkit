@@ -31,6 +31,7 @@ class AppointKit_Services_Repository {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is built from $wpdb->prefix and a hardcoded literal; all values use placeholders.
 			$wpdb->prepare( "SELECT * FROM {$this->table} WHERE status = %s ORDER BY name ASC", 'active' )
 		);
 		return array_map( array( $this, 'row_to_model' ), $rows ?: array() );
@@ -46,6 +47,7 @@ class AppointKit_Services_Repository {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$row = $wpdb->get_row(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is built from $wpdb->prefix and a hardcoded literal; all values use placeholders.
 			$wpdb->prepare( "SELECT * FROM {$this->table} WHERE id = %d", $id )
 		);
 		return $row ? $this->row_to_model( $row ) : null;

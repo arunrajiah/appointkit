@@ -75,7 +75,9 @@ class AppointKit_Availability_Page {
 		// Delete existing rules and re-insert from form data.
 		$this->repo->delete_for_staff( $staff_id );
 
-		$weekday_rules = (array) ( $_POST['weekday'] ?? array() );
+		// Nonce is verified in render() before this method is called.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$weekday_rules = (array) wp_unslash( $_POST['weekday'] ?? array() );
 		foreach ( $weekday_rules as $day => $rule_data ) {
 			$rule              = new AppointKit_Availability_Rule();
 			$rule->staff_id    = $staff_id;

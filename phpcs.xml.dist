@@ -6,8 +6,6 @@
     <exclude-pattern>vendor/*</exclude-pattern>
     <exclude-pattern>node_modules/*</exclude-pattern>
     <exclude-pattern>tests/*</exclude-pattern>
-    <exclude-pattern>assets/js/fullcalendar.min.js</exclude-pattern>
-    <exclude-pattern>assets/css/fullcalendar.min.css</exclude-pattern>
 
     <rule ref="WordPress-Extra">
         <!-- Direct DB queries are intentional for custom tables; documented in docs/plugin-check-warnings.md -->
@@ -27,7 +25,11 @@
 
     <config name="minimum_supported_wp_version" value="6.2"/>
 
-    <rule ref="PHPCompatibilityWP">
-        <config name="testVersion" value="7.4-"/>
-    </rule>
+    <!--
+      PHP cross-version compatibility is NOT checked here.
+      PHPCompatibility 9.3.5 (the newest release compatible with PHPCS 3.x / WPCS 3.x)
+      crashes on PHP 8.4+ and aborts file checking, which silently hides all other
+      violations. Use the official Plugin Check plugin for PHP compatibility instead:
+      https://wordpress.org/plugins/plugin-check/
+    -->
 </ruleset>

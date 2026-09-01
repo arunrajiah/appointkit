@@ -19,7 +19,7 @@ class AppointKit_Slot_Generator {
 	/** @var array In-memory cache keyed by service_id:staff_id:date. */
 	private $cache = array();
 
-	public function __construct( AppointKit_Availability_Calculator $calculator = null ) {
+	public function __construct( ?AppointKit_Availability_Calculator $calculator = null ) {
 		$this->calculator = $calculator ?: new AppointKit_Availability_Calculator();
 	}
 

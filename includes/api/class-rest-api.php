@@ -249,6 +249,7 @@ class AppointKit_REST_API {
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$bookings = $wpdb->get_results(
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table names are built from $wpdb->prefix and hardcoded literals; all values use placeholders.
 			$wpdb->prepare(
 				"SELECT b.*, s.name AS service_name, s.color AS service_color, st.name AS staff_name
 				 FROM {$table} b
@@ -261,6 +262,7 @@ class AppointKit_REST_API {
 				$start
 			)
 		);
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		$events = array_map( function ( $row ) {
 			return array(

@@ -23,7 +23,7 @@ $service       = ( new AppointKit_Services_Repository() )->find( $booking->servi
 	</td></tr>
 	<tr><td style="padding: 32px;">
 		<h2 style="color: #333333;"><?php esc_html_e( 'New Booking Assigned to You', 'appointkit' ); ?></h2>
-		<p style="color: #555555;"><?php printf( esc_html__( 'Hi %s,', 'appointkit' ), esc_html( $staff->name ) ); ?></p>
+		<p style="color: #555555;"><?php /* translators: %s: staff member name */ printf( esc_html__( 'Hi %s,', 'appointkit' ), esc_html( $staff->name ) ); ?></p>
 		<table width="100%" cellpadding="8" cellspacing="0" style="border: 1px solid #eeeeee; border-radius: 4px; margin: 16px 0;">
 			<tr><td style="color: #888888; width: 140px;"><?php esc_html_e( 'Customer', 'appointkit' ); ?></td>
 				<td style="color: #333333;"><?php echo esc_html( $booking->customer_name ); ?> (<?php echo esc_html( $booking->customer_email ); ?>)</td></tr>

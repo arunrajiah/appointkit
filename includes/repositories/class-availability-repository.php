@@ -31,6 +31,7 @@ class AppointKit_Availability_Repository {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is built from $wpdb->prefix and a hardcoded literal; all values use placeholders.
 				"SELECT * FROM {$this->table} WHERE staff_id = %d ORDER BY type ASC, weekday ASC, date ASC",
 				$staff_id
 			)
@@ -49,6 +50,7 @@ class AppointKit_Availability_Repository {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is built from $wpdb->prefix and a hardcoded literal; all values use placeholders.
 				"SELECT * FROM {$this->table} WHERE staff_id = %d AND type = %s ORDER BY weekday ASC",
 				$staff_id,
 				'weekday'
@@ -74,6 +76,7 @@ class AppointKit_Availability_Repository {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is built from $wpdb->prefix and a hardcoded literal; all values use placeholders.
 				"SELECT * FROM {$this->table}
 				 WHERE staff_id = %d AND type = %s AND date BETWEEN %s AND %s",
 				$staff_id,

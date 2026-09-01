@@ -34,13 +34,13 @@ class AppointKit_Booking_Creator {
 	private $emails;
 
 	public function __construct(
-		AppointKit_Services_Repository $services_repo = null,
-		AppointKit_Staff_Repository $staff_repo = null,
-		AppointKit_Bookings_Repository $bookings_repo = null,
-		AppointKit_Slot_Generator $slot_generator = null,
-		AppointKit_Conflict_Checker $conflict_checker = null,
-		AppointKit_Stripe_Gateway $stripe = null,
-		AppointKit_Email_Manager $emails = null
+		?AppointKit_Services_Repository $services_repo = null,
+		?AppointKit_Staff_Repository $staff_repo = null,
+		?AppointKit_Bookings_Repository $bookings_repo = null,
+		?AppointKit_Slot_Generator $slot_generator = null,
+		?AppointKit_Conflict_Checker $conflict_checker = null,
+		?AppointKit_Stripe_Gateway $stripe = null,
+		?AppointKit_Email_Manager $emails = null
 	) {
 		$this->services_repo    = $services_repo ?: new AppointKit_Services_Repository();
 		$this->staff_repo       = $staff_repo ?: new AppointKit_Staff_Repository();

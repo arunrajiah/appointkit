@@ -23,7 +23,7 @@ $cancel_error  = isset( $_GET['cancel_error'] ) ? sanitize_text_field( wp_unslas
 			printf(
 				/* translators: %d: hours before appointment */
 				esc_html( _n( 'Bookings can only be cancelled more than %d hour in advance.', 'Bookings can only be cancelled more than %d hours in advance.', $cutoff_hours, 'appointkit' ) ),
-				$cutoff_hours
+				absint( $cutoff_hours )
 			);
 		?></div>
 	<?php elseif ( $cancel_error ) : ?>
