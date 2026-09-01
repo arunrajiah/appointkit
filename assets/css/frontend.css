@@ -1,0 +1,320 @@
+/**
+ * AppointKit booking form styles.
+ *
+ * Scoped to .appointkit-* so the form sits inside any theme without leaking
+ * styles. Colours use custom properties so themes can override them.
+ */
+
+.appointkit-booking-form {
+	--appointkit-accent: #2c3e50;
+	--appointkit-accent-contrast: #ffffff;
+	--appointkit-border: #e2e5e9;
+	--appointkit-muted: #6b7280;
+	--appointkit-radius: 6px;
+
+	max-width: 640px;
+	margin: 0 auto;
+	color: inherit;
+	font-size: 16px;
+	line-height: 1.5;
+}
+
+.appointkit-booking-form *,
+.appointkit-booking-form *::before,
+.appointkit-booking-form *::after {
+	box-sizing: border-box;
+}
+
+/* Step indicator */
+
+.appointkit-step-nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin: 0 0 24px;
+	padding: 0;
+	list-style: none;
+	counter-reset: appointkit-step;
+}
+
+.appointkit-step-nav__item {
+	flex: 1 1 auto;
+	min-width: 72px;
+	padding: 8px 4px;
+	border-bottom: 3px solid var(--appointkit-border);
+	color: var(--appointkit-muted);
+	font-size: 13px;
+	text-align: center;
+}
+
+.appointkit-step-nav__item.is-complete {
+	border-bottom-color: #9ca3af;
+	color: #4b5563;
+}
+
+.appointkit-step-nav__item.is-active {
+	border-bottom-color: var(--appointkit-accent);
+	color: var(--appointkit-accent);
+	font-weight: 600;
+}
+
+/* Selectable cards */
+
+.appointkit-service-list,
+.appointkit-staff-list {
+	display: grid;
+	gap: 10px;
+}
+
+.appointkit-card {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	width: 100%;
+	padding: 14px 16px;
+	border: 1px solid var(--appointkit-border);
+	border-left: 4px solid var(--appointkit-accent);
+	border-radius: var(--appointkit-radius);
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+	transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.appointkit-card:hover,
+.appointkit-card:focus-visible {
+	border-color: var(--appointkit-accent);
+	box-shadow: 0 1px 6px rgba(0, 0, 0, .08);
+}
+
+.appointkit-card__title {
+	font-weight: 600;
+}
+
+.appointkit-card__meta,
+.appointkit-card__desc {
+	color: var(--appointkit-muted);
+	font-size: 14px;
+}
+
+.appointkit-card__photo {
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+/* Time slots */
+
+.appointkit-slots {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+	gap: 8px;
+}
+
+.appointkit-slot {
+	padding: 10px 8px;
+	border: 1px solid var(--appointkit-border);
+	border-radius: var(--appointkit-radius);
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
+}
+
+.appointkit-slot:hover,
+.appointkit-slot:focus-visible {
+	border-color: var(--appointkit-accent);
+	background: var(--appointkit-accent);
+	color: var(--appointkit-accent-contrast);
+}
+
+/* Fields */
+
+.appointkit-field {
+	margin-bottom: 14px;
+}
+
+.appointkit-field label {
+	display: block;
+	margin-bottom: 4px;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.appointkit-field input,
+.appointkit-field textarea,
+.appointkit-datepicker {
+	width: 100%;
+	max-width: 100%;
+	padding: 9px 11px;
+	border: 1px solid var(--appointkit-border);
+	border-radius: var(--appointkit-radius);
+	font: inherit;
+}
+
+.appointkit-datepicker {
+	max-width: 240px;
+}
+
+/* Buttons */
+
+.appointkit-actions {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	margin-top: 20px;
+}
+
+.appointkit-btn {
+	padding: 10px 18px;
+	border: 1px solid var(--appointkit-border);
+	border-radius: var(--appointkit-radius);
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
+}
+
+.appointkit-btn--primary {
+	margin-left: auto;
+	border-color: var(--appointkit-accent);
+	background: var(--appointkit-accent);
+	color: var(--appointkit-accent-contrast);
+	font-weight: 600;
+}
+
+.appointkit-btn--primary:disabled,
+.appointkit-btn.is-busy {
+	opacity: .6;
+	cursor: default;
+}
+
+.appointkit-btn--danger {
+	border-color: #b32d2e;
+	color: #b32d2e;
+}
+
+/* Summary */
+
+.appointkit-summary__list {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 6px 16px;
+	margin: 0 0 20px;
+}
+
+.appointkit-summary__list dt {
+	color: var(--appointkit-muted);
+	font-size: 14px;
+}
+
+.appointkit-summary__list dd {
+	margin: 0;
+	font-weight: 600;
+}
+
+/* Payment */
+
+.appointkit-payment {
+	margin: 20px 0;
+	padding: 16px;
+	border: 1px solid var(--appointkit-border);
+	border-radius: var(--appointkit-radius);
+}
+
+#appointkit-stripe-element {
+	padding: 10px;
+	border: 1px solid var(--appointkit-border);
+	border-radius: var(--appointkit-radius);
+	background: #fff;
+}
+
+#appointkit-stripe-errors,
+.appointkit-form-errors,
+.appointkit-error {
+	margin-top: 10px;
+	color: #b32d2e;
+	font-size: 14px;
+}
+
+#appointkit-stripe-errors:empty,
+.appointkit-form-errors:empty {
+	margin-top: 0;
+}
+
+/* States */
+
+.appointkit-loading,
+.appointkit-empty {
+	margin: 0;
+	padding: 16px 0;
+	color: var(--appointkit-muted);
+}
+
+.appointkit-success {
+	padding: 32px 16px;
+	text-align: center;
+}
+
+.appointkit-success:focus {
+	outline: none;
+}
+
+.appointkit-success__icon {
+	width: 56px;
+	height: 56px;
+	margin: 0 auto 12px;
+	border-radius: 50%;
+	background: #1a7f37;
+	color: #fff;
+	font-size: 30px;
+	line-height: 56px;
+}
+
+.appointkit-success__details .appointkit-summary__list {
+	justify-content: center;
+	max-width: 340px;
+	margin: 16px auto 0;
+	text-align: left;
+}
+
+/* My Bookings table */
+
+.appointkit-bookings-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.appointkit-bookings-table th,
+.appointkit-bookings-table td {
+	padding: 10px 8px;
+	border-bottom: 1px solid var(--appointkit-border, #e2e5e9);
+	text-align: left;
+}
+
+.appointkit-notice {
+	margin-bottom: 16px;
+	padding: 12px 14px;
+	border-left: 4px solid #1a7f37;
+	border-radius: 4px;
+	background: #f0f6f2;
+}
+
+.appointkit-notice--error {
+	border-left-color: #b32d2e;
+	background: #fcf0f1;
+}
+
+@media (max-width: 480px) {
+	.appointkit-step-nav__item {
+		min-width: 0;
+		font-size: 11px;
+	}
+
+	.appointkit-slots {
+		grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+	}
+}

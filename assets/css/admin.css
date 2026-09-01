@@ -1,0 +1,213 @@
+/**
+ * AppointKit admin styles.
+ *
+ * Loaded only on AppointKit screens. Builds on core WordPress admin classes
+ * (wrap, wp-list-table, form-table) and only adds what those do not cover.
+ */
+
+.appointkit-admin .appointkit-swatch {
+	display: inline-block;
+	width: 12px;
+	height: 12px;
+	margin-right: 6px;
+	border-radius: 3px;
+	vertical-align: baseline;
+}
+
+/* Status pills */
+
+.appointkit-admin .appointkit-status {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 10px;
+	background: #f0f0f1;
+	color: #3c434a;
+	font-size: 12px;
+	line-height: 1.7;
+	white-space: nowrap;
+}
+
+.appointkit-admin .appointkit-status--active,
+.appointkit-admin .appointkit-status--confirmed {
+	background: #edfaef;
+	color: #1a7f37;
+}
+
+.appointkit-admin .appointkit-status--pending {
+	background: #fcf9e8;
+	color: #8a6d1f;
+}
+
+.appointkit-admin .appointkit-status--cancelled,
+.appointkit-admin .appointkit-status--no_show {
+	background: #fcf0f1;
+	color: #b32d2e;
+}
+
+.appointkit-admin .appointkit-status--completed {
+	background: #f0f6fc;
+	color: #2271b1;
+}
+
+/* Availability grid */
+
+.appointkit-admin .appointkit-staff-switcher {
+	margin: 16px 0;
+}
+
+.appointkit-admin .appointkit-availability-grid th[scope="row"] {
+	width: 160px;
+	font-weight: 600;
+}
+
+.appointkit-admin .appointkit-availability-grid input[type="time"] {
+	padding: 2px 6px;
+}
+
+/* Booking detail */
+
+.appointkit-admin .appointkit-detail th {
+	width: 180px;
+}
+
+/* Calendar */
+
+.appointkit-calendar {
+	margin-top: 16px;
+}
+
+.appointkit-calendar__toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	align-items: center;
+	margin-bottom: 12px;
+}
+
+.appointkit-calendar__title {
+	flex: 1 1 auto;
+	margin: 0;
+	font-size: 15px;
+}
+
+.appointkit-calendar__status[hidden] {
+	display: none;
+}
+
+.appointkit-cal {
+	display: flex;
+	overflow-x: auto;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	background: #fff;
+
+	/* Each hour row is 48px tall; the JS sets the hour count. */
+	--appointkit-cal-hours: 11;
+	--appointkit-cal-hour-height: 48px;
+}
+
+.appointkit-cal__gutter {
+	flex: 0 0 64px;
+	border-right: 1px solid #dcdcde;
+}
+
+.appointkit-cal__hour {
+	height: var(--appointkit-cal-hour-height);
+	padding-right: 6px;
+	color: #646970;
+	font-size: 11px;
+	text-align: right;
+	transform: translateY(-6px);
+}
+
+.appointkit-cal__gutter > div:first-child {
+	height: 34px;
+	border-bottom: 1px solid #dcdcde;
+}
+
+.appointkit-cal__col {
+	flex: 1 1 0;
+	min-width: 110px;
+	border-right: 1px solid #f0f0f1;
+}
+
+.appointkit-cal__col:last-child {
+	border-right: 0;
+}
+
+.appointkit-cal__colhead {
+	height: 34px;
+	border-bottom: 1px solid #dcdcde;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 34px;
+	text-align: center;
+}
+
+.appointkit-cal__colhead.is-today {
+	background: #f0f6fc;
+	color: #2271b1;
+}
+
+.appointkit-cal__body {
+	position: relative;
+	height: calc(var(--appointkit-cal-hours) * var(--appointkit-cal-hour-height));
+}
+
+.appointkit-cal__cell {
+	height: var(--appointkit-cal-hour-height);
+	border-bottom: 1px solid #f0f0f1;
+}
+
+.appointkit-cal__event {
+	position: absolute;
+	left: 2px;
+	right: 2px;
+	overflow: hidden;
+	padding: 3px 5px;
+	border-radius: 3px;
+	background: #3788d8;
+	color: #fff;
+	font-size: 11px;
+	line-height: 1.35;
+	text-decoration: none;
+}
+
+.appointkit-cal__event:hover,
+.appointkit-cal__event:focus {
+	box-shadow: 0 0 0 2px rgba(0, 0, 0, .25);
+	color: #fff;
+}
+
+.appointkit-cal__event.is-pending {
+	opacity: .75;
+}
+
+.appointkit-cal__event-time {
+	display: block;
+	font-weight: 600;
+}
+
+.appointkit-cal__event-title,
+.appointkit-cal__event-staff {
+	display: block;
+}
+
+.appointkit-cal__event-staff {
+	opacity: .85;
+}
+
+.appointkit-cal__empty {
+	padding: 16px;
+	color: #646970;
+}
+
+@media screen and (max-width: 782px) {
+	.appointkit-cal__col {
+		min-width: 90px;
+	}
+
+	.appointkit-admin .appointkit-detail th {
+		width: auto;
+	}
+}

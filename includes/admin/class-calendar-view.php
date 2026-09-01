@@ -20,28 +20,11 @@ class AppointKit_Calendar_View {
 			wp_die( esc_html__( 'You do not have permission to access this page.', 'appointkit' ) );
 		}
 
-		wp_enqueue_style(
-			'appointkit-fullcalendar',
-			APPOINTKIT_PLUGIN_URL . 'assets/css/fullcalendar.min.css',
-			array(),
-			'6.1.9'
-		);
-		wp_enqueue_script(
-			'appointkit-fullcalendar',
-			APPOINTKIT_PLUGIN_URL . 'assets/js/fullcalendar.min.js',
-			array(),
-			'6.1.9',
-			true
-		);
-		wp_enqueue_script(
-			'appointkit-calendar-view',
-			APPOINTKIT_PLUGIN_URL . 'assets/js/admin.js',
-			array( 'appointkit-fullcalendar' ),
-			APPOINTKIT_VERSION,
-			true
-		);
+		// The calendar grid is drawn by assets/js/admin.js, which AppointKit_Admin has
+		// already enqueued (as 'appointkit-admin') for every AppointKit screen. Localizing
+		// onto that same handle avoids loading the file twice under two handles.
 		wp_localize_script(
-			'appointkit-calendar-view',
+			'appointkit-admin',
 			'appointkitCalendar',
 			array(
 				'apiBase'     => rest_url( 'appointkit/v1' ),
