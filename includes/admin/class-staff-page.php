@@ -21,6 +21,12 @@ class AppointKit_Staff_Page {
 	/** @var AppointKit_Google_Calendar_Sync */
 	private $gcal;
 
+	/** @var string[] Validation errors carried from handle_request() to render(). */
+	private static $errors = array();
+
+	/** @var AppointKit_Staff|null Rejected submission, redisplayed so input is not lost. */
+	private static $posted = null;
+
 	public function __construct() {
 		$this->repo          = new AppointKit_Staff_Repository();
 		$this->services_repo = new AppointKit_Services_Repository();
@@ -42,21 +48,74 @@ class AppointKit_Staff_Page {
 			case 'edit':
 				$this->render_form();
 				break;
-			case 'delete':
-				$this->handle_delete();
-				break;
-			case 'gcal_connect':
-				$this->handle_gcal_connect();
-				break;
-			case 'gcal_callback':
-				$this->handle_gcal_callback();
-				break;
-			case 'gcal_disconnect':
-				$this->handle_gcal_disconnect();
-				break;
 			default:
 				$this->render_list();
 		}
+	}
+
+	/**
+	 * Handle saves, deletes and Google Calendar OAuth. Runs on admin_init so that
+	 * every branch here can redirect before the admin header is sent.
+	 */
+	public function handle_request() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Selects the handler; each verifies its own nonce.
+		$action = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
+
+		switch ( $action ) {
+			case 'delete':
+				$this->handle_delete();
+				return;
+			case 'gcal_connect':
+				$this->handle_gcal_connect();
+				return;
+			case 'gcal_callback':
+				$this->handle_gcal_callback();
+				return;
+			case 'gcal_disconnect':
+				$this->handle_gcal_disconnect();
+				return;
+		}
+
+		if ( ! isset( $_SERVER['REQUEST_METHOD'] ) || 'POST' !== $_SERVER['REQUEST_METHOD'] || ! isset( $_POST['appointkit_staff_nonce'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['appointkit_staff_nonce'] ) ), 'appointkit_save_staff' ) ) {
+			wp_die( esc_html__( 'Security check failed.', 'appointkit' ) );
+		}
+
+		$this->save_from_post();
+	}
+
+	/**
+	 * Persist a staff member from POST data, then redirect on success.
+	 */
+	private function save_from_post() {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in handle_request().
+		$staff_id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
+		$staff    = $staff_id ? $this->repo->find( $staff_id ) : new AppointKit_Staff();
+
+		if ( ! $staff ) {
+			$staff = new AppointKit_Staff();
+		}
+
+		$staff->name     = sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) );
+		$staff->email    = sanitize_email( wp_unslash( $_POST['email'] ?? '' ) );
+		$staff->phone    = sanitize_text_field( wp_unslash( $_POST['phone'] ?? '' ) );
+		$staff->bio      = wp_kses_post( wp_unslash( $_POST['bio'] ?? '' ) );
+		$staff->timezone = sanitize_text_field( wp_unslash( $_POST['timezone'] ?? 'UTC' ) );
+		$staff->status   = sanitize_text_field( wp_unslash( $_POST['status'] ?? 'active' ) );
+		$service_ids     = array_map( 'absint', (array) wp_unslash( $_POST['service_ids'] ?? array() ) );
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
+
+		if ( empty( $staff->name ) ) {
+			self::$errors = array( __( 'Staff name is required.', 'appointkit' ) );
+			self::$posted = $staff;
+			return;
+		}
+
+		$this->repo->save( $staff, $service_ids );
+		wp_safe_redirect( add_query_arg( array( 'page' => 'appointkit-staff', 'saved' => 1 ), admin_url( 'admin.php' ) ) );
+		exit;
 	}
 
 	private function render_list() {
@@ -65,35 +124,12 @@ class AppointKit_Staff_Page {
 	}
 
 	private function render_form() {
-		$staff_id    = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
-		$staff       = $staff_id ? $this->repo->find( $staff_id ) : new AppointKit_Staff();
-		$services    = $this->services_repo->get_all();
-		$errors      = array();
-		$timezones   = timezone_identifiers_list();
-
-		if ( 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['appointkit_staff_nonce'] ) ) {
-			if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['appointkit_staff_nonce'] ) ), 'appointkit_save_staff' ) ) {
-				wp_die( esc_html__( 'Security check failed.', 'appointkit' ) );
-			}
-
-			$staff->name      = sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) );
-			$staff->email     = sanitize_email( wp_unslash( $_POST['email'] ?? '' ) );
-			$staff->phone     = sanitize_text_field( wp_unslash( $_POST['phone'] ?? '' ) );
-			$staff->bio       = wp_kses_post( wp_unslash( $_POST['bio'] ?? '' ) );
-			$staff->timezone  = sanitize_text_field( wp_unslash( $_POST['timezone'] ?? 'UTC' ) );
-			$staff->status    = sanitize_text_field( wp_unslash( $_POST['status'] ?? 'active' ) );
-			$service_ids      = array_map( 'absint', (array) ( $_POST['service_ids'] ?? array() ) );
-
-			if ( empty( $staff->name ) ) {
-				$errors[] = __( 'Staff name is required.', 'appointkit' );
-			}
-
-			if ( empty( $errors ) ) {
-				$this->repo->save( $staff, $service_ids );
-				wp_safe_redirect( add_query_arg( array( 'page' => 'appointkit-staff', 'saved' => 1 ), admin_url( 'admin.php' ) ) );
-				exit;
-			}
-		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only; the id only selects which record to show.
+		$staff_id  = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
+		$staff     = self::$posted ?: ( $staff_id ? $this->repo->find( $staff_id ) : new AppointKit_Staff() );
+		$services  = $this->services_repo->get_all();
+		$errors    = self::$errors;
+		$timezones = timezone_identifiers_list();
 
 		include APPOINTKIT_PLUGIN_DIR . 'templates/admin/staff-form.php';
 	}

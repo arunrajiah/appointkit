@@ -37,11 +37,19 @@ class AppointKit_Bookings_Page {
 			case 'view':
 				$this->render_detail();
 				break;
-			case 'cancel':
-				$this->handle_cancel();
-				break;
 			default:
 				$this->render_list();
+		}
+	}
+
+	/**
+	 * Handle a cancellation. Called on admin_init, before any output.
+	 */
+	public function handle_request() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Selects the handler; the nonce is verified in handle_cancel().
+		$action = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
+		if ( 'cancel' === $action ) {
+			$this->handle_cancel();
 		}
 	}
 

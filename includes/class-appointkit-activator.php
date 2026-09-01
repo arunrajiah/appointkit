@@ -94,6 +94,7 @@ class AppointKit_Activator {
 			payment_status varchar(30) NOT NULL DEFAULT 'unpaid',
 			notes longtext NOT NULL DEFAULT '',
 			meta longtext NOT NULL DEFAULT '',
+			reminder_sent tinyint(1) NOT NULL DEFAULT 0,
 			created_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			updated_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			PRIMARY KEY (id),

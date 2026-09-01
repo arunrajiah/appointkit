@@ -20,6 +20,36 @@ class AppointKit_Admin {
 	}
 
 	/**
+	 * Run any pending create/update/delete for the current AppointKit screen.
+	 *
+	 * This is hooked on admin_init, which fires before the admin header is sent.
+	 * Doing the work here (rather than inside a page's render()) is what lets the
+	 * handlers finish with wp_safe_redirect(): once render() runs, WordPress has
+	 * already printed the page and headers can no longer be set.
+	 */
+	public function handle_requests() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only selects which handler runs; each handler verifies its own nonce.
+		$page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
+
+		$pages = array(
+			'appointkit'              => 'AppointKit_Bookings_Page',
+			'appointkit-services'     => 'AppointKit_Services_Page',
+			'appointkit-staff'        => 'AppointKit_Staff_Page',
+			'appointkit-availability' => 'AppointKit_Availability_Page',
+			'appointkit-settings'     => 'AppointKit_Settings_Page',
+		);
+
+		if ( ! isset( $pages[ $page ] ) || ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$handler = new $pages[ $page ]();
+		if ( method_exists( $handler, 'handle_request' ) ) {
+			$handler->handle_request();
+		}
+	}
+
+	/**
 	 * Register admin menus.
 	 */
 	public function add_admin_menus() {

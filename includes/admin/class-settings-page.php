@@ -21,15 +21,21 @@ class AppointKit_Settings_Page {
 			wp_die( esc_html__( 'You do not have permission to access this page.', 'appointkit' ) );
 		}
 
-		if ( 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['appointkit_settings_nonce'] ) ) {
-			if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['appointkit_settings_nonce'] ) ), 'appointkit_save_settings' ) ) {
-				wp_die( esc_html__( 'Security check failed.', 'appointkit' ) );
-			}
-			$this->handle_save();
-		}
-
 		$settings = $this->get_settings();
 		include APPOINTKIT_PLUGIN_DIR . 'templates/admin/settings.php';
+	}
+
+	/**
+	 * Handle a settings save. Called on admin_init, before any output.
+	 */
+	public function handle_request() {
+		if ( ! isset( $_SERVER['REQUEST_METHOD'] ) || 'POST' !== $_SERVER['REQUEST_METHOD'] || ! isset( $_POST['appointkit_settings_nonce'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['appointkit_settings_nonce'] ) ), 'appointkit_save_settings' ) ) {
+			wp_die( esc_html__( 'Security check failed.', 'appointkit' ) );
+		}
+		$this->handle_save();
 	}
 
 	/**

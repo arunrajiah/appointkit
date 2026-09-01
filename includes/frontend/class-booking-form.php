@@ -31,19 +31,26 @@ class AppointKit_Booking_Form {
 			true
 		);
 
-		// Stripe.js — loaded from Stripe CDN (required by Stripe ToS).
-		wp_enqueue_script(
-			'stripe-js',
-			'https://js.stripe.com/v3/',
-			array(),
-			null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-			true
-		);
+		$deps = array( 'appointkit-timezone-converter' );
+
+		// Stripe.js must be loaded from Stripe's CDN (their ToS forbids bundling it),
+		// so only request it when Stripe is actually configured. Otherwise a site
+		// taking free bookings would make a third-party request it never needs.
+		if ( appointkit_stripe_is_configured() ) {
+			wp_enqueue_script(
+				'stripe-js',
+				'https://js.stripe.com/v3/',
+				array(),
+				null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+				true
+			);
+			$deps[] = 'stripe-js';
+		}
 
 		wp_enqueue_script(
 			'appointkit-booking-form',
 			APPOINTKIT_PLUGIN_URL . 'assets/js/frontend.js',
-			array( 'stripe-js', 'appointkit-timezone-converter' ),
+			$deps,
 			APPOINTKIT_VERSION,
 			true
 		);

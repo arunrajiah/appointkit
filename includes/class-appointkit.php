@@ -119,6 +119,8 @@ class AppointKit {
 		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $admin, 'add_admin_menus' );
+		// Runs before output so save handlers can redirect.
+		$this->loader->add_action( 'admin_init', $admin, 'handle_requests' );
 	}
 
 	private function define_frontend_hooks() {

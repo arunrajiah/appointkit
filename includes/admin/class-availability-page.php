@@ -41,13 +41,6 @@ class AppointKit_Availability_Page {
 			$staff_id = $staff->id;
 		}
 
-		if ( 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['appointkit_availability_nonce'] ) ) {
-			if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['appointkit_availability_nonce'] ) ), 'appointkit_save_availability' ) ) {
-				wp_die( esc_html__( 'Security check failed.', 'appointkit' ) );
-			}
-			$this->handle_save( $staff_id );
-		}
-
 		$rules = $staff_id ? $this->repo->get_for_staff( $staff_id ) : array();
 		$days  = array(
 			0 => __( 'Sunday', 'appointkit' ),
@@ -60,6 +53,27 @@ class AppointKit_Availability_Page {
 		);
 
 		include APPOINTKIT_PLUGIN_DIR . 'templates/admin/availability.php';
+	}
+
+	/**
+	 * Handle an availability save. Called on admin_init, before any output.
+	 */
+	public function handle_request() {
+		if ( ! isset( $_SERVER['REQUEST_METHOD'] ) || 'POST' !== $_SERVER['REQUEST_METHOD'] || ! isset( $_POST['appointkit_availability_nonce'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['appointkit_availability_nonce'] ) ), 'appointkit_save_availability' ) ) {
+			wp_die( esc_html__( 'Security check failed.', 'appointkit' ) );
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified immediately above.
+		$staff_id = absint( $_GET['staff_id'] ?? 0 );
+		if ( ! $staff_id ) {
+			$all = $this->staff_repo->get_all();
+			$staff_id = ! empty( $all ) ? (int) $all[0]->id : 0;
+		}
+
+		$this->handle_save( $staff_id );
 	}
 
 	/**
