@@ -8,7 +8,7 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Complete appointment booking and scheduling for WordPress. Unlimited services, staff, and bookings. Stripe payments, Google Calendar sync, and email notifications.
+Appointment booking and scheduling for WordPress. Unlimited services, staff and bookings, with Stripe payments and Google Calendar sync.
 
 == Description ==
 
