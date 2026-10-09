@@ -7,3 +7,12 @@ node_modules/
 coverage/
 pc-report.json
 *.zip
+
+# Local AI assistant / OS / env files
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+.mcp.json
+.env
+.env.*
+!.env.example
