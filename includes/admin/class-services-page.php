@@ -84,7 +84,7 @@ class AppointKit_Services_Page {
 		$service->name          = sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) );
 		$service->description   = wp_kses_post( wp_unslash( $_POST['description'] ?? '' ) );
 		$service->duration      = absint( $_POST['duration'] ?? 60 );
-		$service->price         = (float) wp_unslash( $_POST['price'] ?? 0 );
+		$service->price         = isset( $_POST['price'] ) ? (float) sanitize_text_field( wp_unslash( $_POST['price'] ) ) : 0.0;
 		$service->color         = sanitize_hex_color( wp_unslash( $_POST['color'] ?? '#3788d8' ) ) ?: '#3788d8';
 		$service->slot_interval = absint( $_POST['slot_interval'] ?? $service->duration );
 		$service->buffer_before = absint( $_POST['buffer_before'] ?? 0 );

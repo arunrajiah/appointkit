@@ -1233,3 +1233,7 @@ msgstr ""
 #: templates/frontend/my-bookings.php:66
 msgid "Are you sure you want to cancel this booking?"
 msgstr ""
+
+#: includes/api/class-rest-api.php
+msgid "Too many booking attempts. Please try again in a few minutes."
+msgstr ""

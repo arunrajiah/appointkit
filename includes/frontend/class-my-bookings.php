@@ -28,7 +28,8 @@ class AppointKit_My_Bookings {
 			return;
 		}
 
-		if ( 'POST' !== $_SERVER['REQUEST_METHOD'] || empty( $_POST['appointkit_cancel_booking_id'] ) ) {
+		$method = isset( $_SERVER['REQUEST_METHOD'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : '';
+		if ( 'POST' !== $method || empty( $_POST['appointkit_cancel_booking_id'] ) ) {
 			return;
 		}
 

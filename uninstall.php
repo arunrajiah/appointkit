@@ -17,7 +17,7 @@ if ( ! get_option( 'appointkit_remove_data_on_uninstall' ) ) {
 
 global $wpdb;
 
-$tables = array(
+$appointkit_tables = array(
 	$wpdb->prefix . 'appointkit_services',
 	$wpdb->prefix . 'appointkit_staff',
 	$wpdb->prefix . 'appointkit_staff_services',
@@ -26,9 +26,9 @@ $tables = array(
 	$wpdb->prefix . 'appointkit_locations',
 );
 
-foreach ( $tables as $table ) {
+foreach ( $appointkit_tables as $appointkit_table ) {
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-	$wpdb->query( "DROP TABLE IF EXISTS {$table}" );
+	$wpdb->query( "DROP TABLE IF EXISTS {$appointkit_table}" );
 }
 
 // Remove all options.

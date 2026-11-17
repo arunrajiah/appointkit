@@ -60,7 +60,7 @@ class AppointKit_Settings_Page {
 		// Nonce and capability are verified in render() before this method is called.
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		foreach ( $fields as $key => $sanitizer ) {
-			$value = wp_unslash( $_POST[ $key ] ?? '' );
+			$value = isset( $_POST[ $key ] ) ? sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) : '';
 			update_option( $key, call_user_func( $sanitizer, $value ) );
 		}
 

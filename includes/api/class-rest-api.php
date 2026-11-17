@@ -21,13 +21,13 @@ class AppointKit_REST_API {
 		register_rest_route( self::NAMESPACE, '/services', array(
 			'methods'             => WP_REST_Server::READABLE,
 			'callback'            => array( $this, 'get_services' ),
-			'permission_callback' => '__return_true',
+			'permission_callback' => '__return_true', // Public, read-only catalogue data shown on the booking form.
 		) );
 
 		register_rest_route( self::NAMESPACE, '/staff', array(
 			'methods'             => WP_REST_Server::READABLE,
 			'callback'            => array( $this, 'get_staff' ),
-			'permission_callback' => '__return_true',
+			'permission_callback' => '__return_true', // Public, read-only catalogue data shown on the booking form.
 			'args'                => array(
 				'service_id' => array(
 					'required'          => false,
@@ -40,7 +40,7 @@ class AppointKit_REST_API {
 		register_rest_route( self::NAMESPACE, '/slots', array(
 			'methods'             => WP_REST_Server::READABLE,
 			'callback'            => array( $this, 'get_slots' ),
-			'permission_callback' => '__return_true',
+			'permission_callback' => '__return_true', // Public, read-only catalogue data shown on the booking form.
 			'args'                => array(
 				'service_id' => array(
 					'required'          => true,
@@ -63,7 +63,7 @@ class AppointKit_REST_API {
 		register_rest_route( self::NAMESPACE, '/bookings', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => array( $this, 'create_booking' ),
-			'permission_callback' => '__return_true',
+			'permission_callback' => array( $this, 'public_booking_permission' ),
 			'args'                => array(
 				'service_id'        => array( 'required' => true, 'sanitize_callback' => 'absint' ),
 				'staff_id'          => array( 'required' => true, 'sanitize_callback' => 'absint' ),
@@ -318,8 +318,46 @@ class AppointKit_REST_API {
 		if ( current_user_can( 'manage_options' ) ) {
 			return true;
 		}
-		$email = sanitize_email( $request->get_param( 'email' ) ?: '' );
-		return ! empty( $email );
+		$booking = ( new AppointKit_Bookings_Repository() )->find( $request->get_param( 'id' ) );
+		$email   = sanitize_email( $request->get_param( 'email' ) ?: '' );
+		return $booking && $email && strtolower( $booking->customer_email ) === strtolower( $email );
+	}
+
+	/**
+	 * Permission: public booking creation.
+	 *
+	 * Guests must be able to book without an account, so this endpoint is
+	 * intentionally open. Every field is sanitized by the route args and
+	 * validated again in AppointKit_Booking_Creator (service and staff must
+	 * exist, the slot must be free, and the price is read from the service
+	 * record, never from the request). A per-IP throttle limits abuse.
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function public_booking_permission() {
+		if ( current_user_can( 'manage_options' ) ) {
+			return true;
+		}
+
+		$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+		if ( '' === $ip ) {
+			return true;
+		}
+
+		$key   = 'appointkit_rl_' . md5( $ip );
+		$count = (int) get_transient( $key );
+		$limit = (int) apply_filters( 'appointkit_booking_rate_limit', 10 );
+
+		if ( $count >= $limit ) {
+			return new WP_Error(
+				'appointkit_rate_limited',
+				__( 'Too many booking attempts. Please try again in a few minutes.', 'appointkit' ),
+				array( 'status' => 429 )
+			);
+		}
+
+		set_transient( $key, $count + 1, 10 * MINUTE_IN_SECONDS );
+		return true;
 	}
 
 	// --- Validation helpers ---

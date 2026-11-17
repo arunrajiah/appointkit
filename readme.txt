@@ -45,6 +45,15 @@ Appointment booking and scheduling for WordPress. Unlimited services, staff and 
 * Webhooks (Zapier/Make)
 * And more
 
+== Third-party services ==
+
+AppointKit stores all booking data in your own WordPress database and does not phone home. Two optional integrations contact external services, and only after you enable them in **AppointKit → Settings**:
+
+* **Stripe** (payments). When Stripe keys are saved, the booking form loads Stripe.js from `https://js.stripe.com/v3/` (Stripe requires it to be served from their domain) and your server sends the payment amount and the card's payment method ID to the Stripe API to create the charge. Card numbers never touch your server. [Stripe Terms of Service](https://stripe.com/legal) and [Stripe Privacy Policy](https://stripe.com/privacy).
+* **Google Calendar** (availability sync). When a staff member connects their calendar, the plugin reads busy times from the Google Calendar API so those slots are not offered to customers. No booking details are written to Google in the free plugin. [Google APIs Terms of Service](https://developers.google.com/terms) and [Google Privacy Policy](https://policies.google.com/privacy).
+
+If you leave both integrations unconfigured, no request is made to any third party.
+
 == Installation ==
 
 1. Upload the `appointkit` folder to `/wp-content/plugins/`.
