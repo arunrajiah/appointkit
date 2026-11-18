@@ -81,7 +81,8 @@ class AppointKit_REST_API {
 			'callback'            => array( $this, 'get_booking' ),
 			'permission_callback' => array( $this, 'booking_read_permission' ),
 			'args'                => array(
-				'id' => array( 'validate_callback' => array( $this, 'validate_positive_int' ) ),
+				'id'    => array( 'validate_callback' => array( $this, 'validate_positive_int' ) ),
+				'token' => array( 'required' => false, 'sanitize_callback' => 'sanitize_text_field' ),
 			),
 		) );
 
@@ -91,7 +92,8 @@ class AppointKit_REST_API {
 			'permission_callback' => array( $this, 'booking_cancel_permission' ),
 			'args'                => array(
 				'id'    => array( 'validate_callback' => array( $this, 'validate_positive_int' ) ),
-				'email' => array( 'required' => true, 'sanitize_callback' => 'sanitize_email' ),
+				'token' => array( 'required' => false, 'sanitize_callback' => 'sanitize_text_field' ),
+				'email' => array( 'required' => false, 'sanitize_callback' => 'sanitize_email' ),
 			),
 		) );
 
@@ -194,6 +196,7 @@ class AppointKit_REST_API {
 			'start_display'  => AppointKit_Timezone::format_for_display( $result->start_utc ),
 			'end_display'    => AppointKit_Timezone::format_for_display( $result->end_utc ),
 			'service_name'   => $service ? $service->name : '',
+			'token'          => appointkit_booking_token( $result->id, $result->customer_email ),
 		) );
 	}
 
@@ -222,7 +225,7 @@ class AppointKit_REST_API {
 		$email      = $request->get_param( 'email' );
 		$booking    = ( new AppointKit_Bookings_Repository() )->find( $booking_id );
 
-		if ( ! $booking || strtolower( $booking->customer_email ) !== strtolower( $email ) ) {
+		if ( ! $booking || ( $email && strtolower( $booking->customer_email ) !== strtolower( $email ) ) ) {
 			return new WP_Error( 'not_found', __( 'Booking not found.', 'appointkit' ), array( 'status' => 404 ) );
 		}
 
@@ -294,33 +297,56 @@ class AppointKit_REST_API {
 	}
 
 	/**
-	 * Permission: admin, or the booking owner (verified by email).
+	 * Permission: admin, or the booking owner.
+	 *
+	 * Guests prove ownership with the per-booking token that POST /bookings
+	 * returned when the booking was created (passed as the `token` parameter
+	 * or the `X-Appointkit-Token` header). The token is an HMAC keyed with the
+	 * site salt, so a guessed booking ID or a known email is not enough.
 	 *
 	 * @param WP_REST_Request $request REST request.
-	 * @return bool
+	 * @return bool|WP_Error
 	 */
 	public function booking_read_permission( WP_REST_Request $request ) {
-		if ( current_user_can( 'manage_options' ) ) {
-			return true;
-		}
-		$booking = ( new AppointKit_Bookings_Repository() )->find( $request->get_param( 'id' ) );
-		$email   = sanitize_email( $request->get_header( 'X-Appointkit-Email' ) ?: '' );
-		return $booking && $email && strtolower( $booking->customer_email ) === strtolower( $email );
+		return $this->owner_permission( $request );
 	}
 
 	/**
-	 * Permission: admin, or booking owner (email in body).
+	 * Permission: admin, or the booking owner (see booking_read_permission()).
 	 *
 	 * @param WP_REST_Request $request REST request.
-	 * @return bool
+	 * @return bool|WP_Error
 	 */
 	public function booking_cancel_permission( WP_REST_Request $request ) {
+		return $this->owner_permission( $request );
+	}
+
+	/**
+	 * Shared owner check for the single-booking routes.
+	 *
+	 * @param WP_REST_Request $request REST request.
+	 * @return bool|WP_Error
+	 */
+	private function owner_permission( WP_REST_Request $request ) {
 		if ( current_user_can( 'manage_options' ) ) {
 			return true;
 		}
+
+		$token = $request->get_param( 'token' );
+		if ( empty( $token ) ) {
+			$token = $request->get_header( 'X-Appointkit-Token' );
+		}
+		$token   = sanitize_text_field( (string) $token );
 		$booking = ( new AppointKit_Bookings_Repository() )->find( $request->get_param( 'id' ) );
-		$email   = sanitize_email( $request->get_param( 'email' ) ?: '' );
-		return $booking && $email && strtolower( $booking->customer_email ) === strtolower( $email );
+
+		if ( ! appointkit_verify_booking_token( $booking, $token ) ) {
+			return new WP_Error(
+				'appointkit_forbidden',
+				__( 'A valid booking token is required.', 'appointkit' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+		return true;
 	}
 
 	/**

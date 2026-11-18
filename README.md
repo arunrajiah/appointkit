@@ -190,15 +190,18 @@ Content-Type: application/json
   "id": 42,
   "status": "confirmed",
   "payment_status": "paid",
-  "start_local": "15 Jun 2026, 9:00 AM BST"
+  "start_local": "15 Jun 2026, 9:00 AM BST",
+  "token": "3f1c…"
 }
 ```
+Keep the `token`: it is the customer's proof of ownership for the single-booking endpoints below. It is an HMAC of the booking ID and email keyed with the site salt, so it cannot be derived from the booking ID.
 
-### Cancel a booking
+### Read or cancel a booking
 ```http
-DELETE /wp-json/appointkit/v1/bookings/42
+GET    /wp-json/appointkit/v1/bookings/42?token=3f1c…
+DELETE /wp-json/appointkit/v1/bookings/42?token=3f1c…
 ```
-Requires either admin authentication or the booking owner's email passed as `customer_email` query param.
+Requires either admin authentication or the booking's `token` (as a query/body param or the `X-Appointkit-Token` header). Anything else gets a 401/403.
 
 ---
 

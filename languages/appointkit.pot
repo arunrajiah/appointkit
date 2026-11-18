@@ -1237,3 +1237,7 @@ msgstr ""
 #: includes/api/class-rest-api.php
 msgid "Too many booking attempts. Please try again in a few minutes."
 msgstr ""
+
+#: includes/api/class-rest-api.php
+msgid "A valid booking token is required."
+msgstr ""

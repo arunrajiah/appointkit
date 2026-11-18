@@ -131,3 +131,32 @@ function appointkit_sanitize_time( $time ) {
 	$s     = isset( $parts[2] ) ? absint( $parts[2] ) : 0;
 	return sprintf( '%02d:%02d:%02d', min( $h, 23 ), min( $m, 59 ), min( $s, 59 ) );
 }
+
+/**
+ * Build the per-booking access token handed to the customer at creation.
+ *
+ * The token is an HMAC of the booking ID and customer email keyed with the
+ * site's auth salt, so it cannot be derived from a predictable booking ID and
+ * is only known to whoever received the booking confirmation.
+ *
+ * @param int    $booking_id     Booking ID.
+ * @param string $customer_email Customer email stored on the booking.
+ * @return string
+ */
+function appointkit_booking_token( $booking_id, $customer_email ) {
+	return hash_hmac( 'sha256', absint( $booking_id ) . '|' . strtolower( trim( (string) $customer_email ) ), wp_salt( 'auth' ) );
+}
+
+/**
+ * Check a customer-supplied token against a booking.
+ *
+ * @param AppointKit_Booking|null $booking Booking model.
+ * @param string                  $token   Token supplied with the request.
+ * @return bool
+ */
+function appointkit_verify_booking_token( $booking, $token ) {
+	if ( ! $booking || empty( $booking->id ) || ! is_string( $token ) || '' === $token ) {
+		return false;
+	}
+	return hash_equals( appointkit_booking_token( $booking->id, $booking->customer_email ), $token );
+}

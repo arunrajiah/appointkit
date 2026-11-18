@@ -1,4 +1,4 @@
-=== AppointKit – Appointment Booking & Scheduling ===
+=== AppointKit ===
 Contributors: arunrajiah
 Tags: appointments, booking, scheduling, calendar, stripe
 Requires at least: 6.2
@@ -36,7 +36,7 @@ Appointment booking and scheduling for WordPress. Unlimited services, staff and 
 * Group bookings
 * Zoom/Google Meet auto-links
 * WooCommerce integration
-* Custom booking form fields
+* Visual custom field builder (the free plugin already provides the `appointkit_booking_form_fields` filter and `appointkit_booking_form_extra_fields` action for developers)
 * Coupons & discounts
 * Session packages
 * Wait-list
@@ -45,12 +45,21 @@ Appointment booking and scheduling for WordPress. Unlimited services, staff and 
 * Webhooks (Zapier/Make)
 * And more
 
-== Third-party services ==
+== External services ==
 
 AppointKit stores all booking data in your own WordPress database and does not phone home. Two optional integrations contact external services, and only after you enable them in **AppointKit → Settings**:
 
-* **Stripe** (payments). When Stripe keys are saved, the booking form loads Stripe.js from `https://js.stripe.com/v3/` (Stripe requires it to be served from their domain) and your server sends the payment amount and the card's payment method ID to the Stripe API to create the charge. Card numbers never touch your server. [Stripe Terms of Service](https://stripe.com/legal) and [Stripe Privacy Policy](https://stripe.com/privacy).
-* **Google Calendar** (availability sync). When a staff member connects their calendar, the plugin reads busy times from the Google Calendar API so those slots are not offered to customers. No booking details are written to Google in the free plugin. [Google APIs Terms of Service](https://developers.google.com/terms) and [Google Privacy Policy](https://policies.google.com/privacy).
+**Stripe** (card payments). Used to charge customers for paid services.
+
+* Stripe.js is loaded in the visitor's browser from `https://js.stripe.com/v3/` only on pages that show the booking form and only when Stripe keys are saved. Stripe requires it to be served from their domain. Card details are entered into Stripe's own fields and never reach your server.
+* When a customer submits a paid booking, your server sends the amount, currency, the Stripe payment method ID and the booking reference to `https://api.stripe.com` to create the charge.
+* Service by Stripe, Inc.: [Terms of Service](https://stripe.com/legal) and [Privacy Policy](https://stripe.com/privacy).
+
+**Google Calendar** (availability sync). Used to hide time slots that are already busy in a staff member's Google Calendar.
+
+* When a staff member clicks "Connect Google Calendar", they are sent to Google's OAuth consent screen and your server exchanges the returned authorization code for access and refresh tokens with `https://oauth2.googleapis.com`. Tokens are stored on the staff record in your database.
+* Each time the booking form computes available slots for that staff member, your server asks `https://www.googleapis.com/calendar/v3/freeBusy` for busy periods in the requested date range. Only the date range is sent. No booking details are written to Google in the free plugin.
+* Service by Google LLC: [Google APIs Terms of Service](https://developers.google.com/terms) and [Privacy Policy](https://policies.google.com/privacy).
 
 If you leave both integrations unconfigured, no request is made to any third party.
 
